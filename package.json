@@ -1,0 +1,19 @@
+{
+  "name": "cardperks",
+  "version": "1.0.0",
+  "description": "Credit card coupon book aggregator — browse offers from Amex, Chase, BofA, and more",
+  "scripts": {
+    "dev": "npx serve . -p 3000",
+    "scrape:amex": "node scripts/scrape-amex.js",
+    "scrape:amex:dry": "node scripts/scrape-amex.js --dry-run",
+    "scrape:chase": "node scripts/scrape-chase.js",
+    "scrape:chase:dry": "node scripts/scrape-chase.js --dry-run",
+    "scrape:bofa": "node scripts/scrape-bofa.js",
+    "scrape:bofa:dry": "node scripts/scrape-bofa.js --dry-run",
+    "scrape:all": "./scripts/update-offers.sh"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "node-fetch": "^2.7.0"
+  }
+}

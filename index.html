@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CardPerks — Credit Card Coupon Books & Offers</title>
+  <meta name="description" content="Browse the latest credit card coupon books and offers from American Express, Chase, Bank of America, Capital One, Citi, and more. Updated daily.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta property="og:title" content="CardPerks — Credit Card Coupon Books & Offers">
+  <meta property="og:description" content="Browse 50+ real offers from Amex, Chase, and more. Updated daily from public deal sites.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="CardPerks — Credit Card Coupon Books">
+  <meta name="twitter:description" content="Browse the latest credit card coupon books and offers. Save on dining, travel, shopping, and more.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">Card<span>Perks</span></div>
+    <nav class="header-nav">
+      <a href="#" class="active">All Offers</a>
+      <a href="#amex-section">Amex</a>
+      <a href="#chase-section">Chase</a>
+      <a href="#bofa-section">BofA</a>
+    </nav>
+    <div class="header-meta">Updated: <span id="update-date">loading...</span></div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <h1>Credit Card Coupon Books</h1>
+  <p>Browse the latest offers and coupon books from top credit card issuers. Save on dining, travel, shopping, and more.</p>
+  <div class="updated-badge">
+    <span class="dot"></span>
+    Data last refreshed: <span id="data-date">loading...</span>
+  </div>
+</section>
+
+<!-- Controls -->
+<div class="controls">
+  <div class="controls-inner">
+    <div class="search-box">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search" placeholder="Search merchants, offers, categories...">
+    </div>
+    <div class="filter-pills" id="issuer-filters">
+      <button class="pill active" data-issuer="all">All Issuers</button>
+      <button class="pill" data-issuer="amex">Amex</button>
+      <button class="pill" data-issuer="chase">Chase</button>
+      <button class="pill" data-issuer="bofa">BofA</button>
+      <button class="pill" data-issuer="capone">Capital One</button>
+      <button class="pill" data-issuer="citi">Citi</button>
+      <button class="pill" data-issuer="discover">Discover</button>
+      <button class="pill" data-issuer="usbank">US Bank</button>
+      <button class="pill" data-issuer="wells">Wells Fargo</button>
+    </div>
+    <div class="category-pills" id="category-filters">
+      <button class="cat-pill active" data-cat="all">All</button>
+      <button class="cat-pill" data-cat="dining">Dining</button>
+      <button class="cat-pill" data-cat="travel">Travel</button>
+      <button class="cat-pill" data-cat="shopping">Shopping</button>
+      <button class="cat-pill" data-cat="grocery">Grocery</button>
+      <button class="cat-pill" data-cat="entertainment">Entertainment</button>
+      <button class="cat-pill" data-cat="gas">Gas</button>
+      <button class="cat-pill" data-cat="home">Home</button>
+      <button class="cat-pill" data-cat="wellness">Wellness</button>
+    </div>
+  </div>
+</div>
+
+<!-- Disclaimer -->
+<div class="disclaimer-banner">
+  <div class="inner">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>
+    <span>Credit card offers are <strong>targeted</strong> — not all cardholders see the same offers. Data is aggregated from public deal sites and may not reflect your specific account. Always check your card issuer's app for your personalized offers.</span>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="stats-bar">
+  <div class="count" id="result-count"></div>
+  <select class="sort-select" id="sort-select">
+    <option value="value-desc">Highest Value</option>
+    <option value="value-asc">Lowest Value</option>
+    <option value="expiry-asc">Expiring Soon</option>
+    <option value="newest">Newest</option>
+    <option value="alpha">A-Z Merchant</option>
+  </select>
+</div>
+
+<!-- Main Content -->
+<main class="main-content" id="main-content"></main>
+
+<!-- Newsletter -->
+<section class="newsletter">
+  <h2>Get Weekly Coupon Alerts</h2>
+  <p>Be the first to know when new coupon books drop from your favorite card issuers.</p>
+  <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Thanks for subscribing!');">
+    <input type="email" placeholder="your@email.com" required>
+    <button type="submit">Subscribe</button>
+  </form>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <p>CardPerks is an independent site and is not affiliated with any credit card issuer. All trademarks belong to their respective owners.</p>
+  <p style="margin-top:.5rem;">Offers are sourced from publicly available deal sites. Availability may vary by card and region. Always verify offers in your card issuer's app.</p>
+  <p style="margin-top:.5rem;">Sources: <a href="https://awardwallet.com/news/amex-membership-rewards/amex-offers/" target="_blank" rel="noopener">AwardWallet</a> · <a href="https://www.doctorofcredit.com/tag/amex-offers/" target="_blank" rel="noopener">Doctor of Credit</a> · <a href="https://cardpointers.com/offers/" target="_blank" rel="noopener">CardPointers</a> · <a href="https://upgradedpoints.com/news/best-amex-offers/" target="_blank" rel="noopener">Upgraded Points</a></p>
+</footer>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
