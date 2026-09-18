@@ -1,9 +1,13 @@
 {
   "name": "cardperks",
   "version": "1.0.0",
-  "description": "Credit card coupon book aggregator — browse offers from Amex, Chase, BofA, and more",
+  "description": "Credit card coupon book aggregator — browse offers from Amex, Chase, BofA, and ask by text message which card to use",
   "scripts": {
     "dev": "npx serve . -p 3000",
+    "test": "node --test \"test/**/*.test.js\"",
+    "ask": "node bin/ask.js",
+    "imessage": "node adapters/imessage-mac.js",
+    "imessage:dry": "node adapters/imessage-mac.js --dry-run",
     "scrape:amex": "node scripts/scrape-amex.js",
     "scrape:amex:dry": "node scripts/scrape-amex.js --dry-run",
     "scrape:chase": "node scripts/scrape-chase.js",

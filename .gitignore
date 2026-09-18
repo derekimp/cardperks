@@ -3,3 +3,7 @@ data.bak/
 .DS_Store
 *.log
 .vercel
+
+# iMessage adapter: local handles and polling cursor stay off the repo
+adapters/imessage/config.json
+adapters/imessage/.state.json
