@@ -155,16 +155,17 @@ Two things to know about the ranking:
 Rates are hand-entered and drift as issuers change their products — treat a
 recommendation as a prompt to check, not gospel.
 
-## Known limitation: the offer data is stale
+## Where the offer data comes from
 
-Every scraped offer in `data/` expired on 2026-06-30, so today the assistant
-answers from card earn rates alone and says so:
+`data/*-offers.json` is refreshed daily by `.github/workflows/refresh-offers.yml`;
+see [`docs/SCRAPING.md`](SCRAPING.md). Offers whose source gave no end date carry
+`expiryEstimated: true`, and the bot says "expiry unconfirmed" for those rather
+than quoting a guessed date.
+
+Until that workflow has run once on `main`, the committed data is the old
+snapshot whose offers all expired on 2026-06-30, so answers fall back to card
+earn rates alone and say so:
 
 ```
 ⚠️ Offer data is 156 days old (last refreshed 2026-04-15) …
 ```
-
-The same staleness is why the website currently renders "No offers found". The
-scrapers exist but nothing runs them on a schedule — `scripts/update-offers.sh`
-documents a cron line that was never installed. Until a scheduled refresh lands,
-the targeted-offer half of every answer stays empty.

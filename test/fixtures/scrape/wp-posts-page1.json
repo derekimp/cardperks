@@ -1,0 +1,38 @@
+[
+  {
+    "date_gmt": "2026-10-01T14:05:00",
+    "link": "https://www.doctorofcredit.com/amex-offers-uniqlo-20/",
+    "title": { "rendered": "AmEx Offers: Uniqlo, Spend $100 Get $20 Back" },
+    "content": { "rendered": "<h2>The Offer</h2><ul><li>Spend $100 or more at Uniqlo, get $20 back.</li><li>Expires 12/31/2026.</li></ul>" }
+  },
+  {
+    "date_gmt": "2026-09-01T09:00:00",
+    "link": "https://www.doctorofcredit.com/amex-offers-hm/",
+    "title": { "rendered": "AmEx Offers: H&#038;M, Get 10% Back (Up To $30)" },
+    "content": { "rendered": "<p>Get 10% back at H&amp;M. Targeted, add the offer to your card first.</p>" }
+  },
+  {
+    "date_gmt": "2026-09-28T10:00:00",
+    "link": "https://www.doctorofcredit.com/expired-zara/",
+    "title": { "rendered": "[Expired] AmEx Offers: Zara, Spend $75 Get $15 Back" },
+    "content": { "rendered": "<p>This offer has ended.</p>" }
+  },
+  {
+    "date_gmt": "2026-09-27T10:00:00",
+    "link": "https://www.doctorofcredit.com/amex-platinum-review/",
+    "title": { "rendered": "Amex Platinum Review: Is It Worth It?" },
+    "content": { "rendered": "<p>An opinion piece with no offer in it, mentioning $695 fees.</p>" }
+  },
+  {
+    "date_gmt": "2026-08-01T10:00:00",
+    "link": "https://www.doctorofcredit.com/amex-old-store/",
+    "title": { "rendered": "AmEx Offers: Old Store, Spend $50 Get $10 Back" },
+    "content": { "rendered": "<p>No end date was given.</p>" }
+  },
+  {
+    "date_gmt": "2026-09-20T10:00:00",
+    "link": "https://www.doctorofcredit.com/amex-offers-uniqlo-older/",
+    "title": { "rendered": "AmEx Offers: Uniqlo, Spend $50 Get $10 Back" },
+    "content": { "rendered": "<p>Valid through November 15, 2026.</p>" }
+  }
+]

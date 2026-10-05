@@ -1,0 +1,56 @@
+name: Refresh offers
+
+# Scrapes every issuer once a day and commits data/*-offers.json when the
+# offers changed. Scheduled runs only fire on the default branch.
+on:
+  schedule:
+    - cron: "17 13 * * *" # 13:17 UTC daily, off the top of the hour
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-offers
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm test
+
+      # Keep going if one issuer fails so the others still get committed;
+      # the last step turns the job red so a blocked source is noticed.
+      - name: Scrape
+        id: scrape
+        continue-on-error: true
+        run: node scripts/scrape.js --all
+
+      - name: Commit refreshed data
+        run: |
+          if git diff --quiet -- data/; then
+            echo "Offers unchanged."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/*-offers.json
+          git commit -m "Refresh offers $(date -u +%F)"
+          git push
+
+      - name: Fail if any issuer came back empty
+        if: steps.scrape.outcome == 'failure'
+        run: |
+          echo "::error::At least one issuer returned no offers; its previous data was kept. See the Scrape step log."
+          exit 1
