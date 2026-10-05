@@ -1,0 +1,56 @@
+{
+  "issuer": "amex",
+  "issuerName": "American Express",
+  "lastUpdated": "2026-09-15",
+  "source": "fixture",
+  "offers": [
+    {
+      "id": "amex-001",
+      "merchant": "Uniqlo",
+      "emoji": "🛍️",
+      "value": "$20 back on $100+",
+      "valueNum": 20,
+      "description": "$20 back at Uniqlo on $100+.",
+      "category": "shopping",
+      "expiry": "2026-12-31",
+      "isNew": true,
+      "isHot": true,
+      "minSpend": "$100",
+      "maxReward": "$20",
+      "terms": "Enrollment required.",
+      "sourceUrl": "https://example.com/uniqlo"
+    },
+    {
+      "id": "amex-002",
+      "merchant": "Zara",
+      "emoji": "🛍️",
+      "value": "10% back",
+      "valueNum": 10,
+      "description": "10% back at Zara.",
+      "category": "shopping",
+      "expiry": "2026-12-31",
+      "isNew": false,
+      "isHot": false,
+      "minSpend": "None",
+      "maxReward": "$30",
+      "terms": "Enrollment required.",
+      "sourceUrl": "https://example.com/zara"
+    },
+    {
+      "id": "amex-003",
+      "merchant": "Old Expired Store",
+      "emoji": "🛍️",
+      "value": "$50 back",
+      "valueNum": 50,
+      "description": "Long gone.",
+      "category": "shopping",
+      "expiry": "2026-01-01",
+      "isNew": false,
+      "isHot": false,
+      "minSpend": "None",
+      "maxReward": "$50",
+      "terms": "Expired.",
+      "sourceUrl": "https://example.com/old"
+    }
+  ]
+}

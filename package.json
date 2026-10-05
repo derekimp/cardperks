@@ -1,19 +1,26 @@
 {
   "name": "cardperks",
   "version": "1.0.0",
-  "description": "Credit card coupon book aggregator — browse offers from Amex, Chase, BofA, and more",
+  "description": "Credit card coupon book aggregator — browse offers from Amex, Chase, BofA, and ask by text message which card to use",
   "scripts": {
     "dev": "npx serve . -p 3000",
-    "scrape:amex": "node scripts/scrape-amex.js",
-    "scrape:amex:dry": "node scripts/scrape-amex.js --dry-run",
-    "scrape:chase": "node scripts/scrape-chase.js",
-    "scrape:chase:dry": "node scripts/scrape-chase.js --dry-run",
-    "scrape:bofa": "node scripts/scrape-bofa.js",
-    "scrape:bofa:dry": "node scripts/scrape-bofa.js --dry-run",
-    "scrape:all": "./scripts/update-offers.sh"
+    "test": "node --test \"test/**/*.test.js\"",
+    "ask": "node bin/ask.js",
+    "imessage": "node adapters/imessage-mac.js",
+    "imessage:dry": "node adapters/imessage-mac.js --dry-run",
+    "scrape": "node scripts/scrape.js",
+    "scrape:all": "node scripts/scrape.js --all",
+    "scrape:amex": "node scripts/scrape.js --issuer amex",
+    "scrape:amex:dry": "node scripts/scrape.js --issuer amex --dry-run",
+    "scrape:chase": "node scripts/scrape.js --issuer chase",
+    "scrape:chase:dry": "node scripts/scrape.js --issuer chase --dry-run",
+    "scrape:bofa": "node scripts/scrape.js --issuer bofa",
+    "scrape:bofa:dry": "node scripts/scrape.js --issuer bofa --dry-run"
   },
   "dependencies": {
-    "cheerio": "^1.0.0",
-    "node-fetch": "^2.7.0"
+    "cheerio": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

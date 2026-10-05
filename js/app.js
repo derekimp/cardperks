@@ -57,7 +57,10 @@ function daysUntil(dateStr) {
   return Math.ceil((d - today) / (1000 * 60 * 60 * 24));
 }
 
-function formatExpiry(dateStr) {
+// `estimated` marks an expiry the scraper inferred because the source post
+// gave no end date; it is a best guess, so it is never shown as a deadline.
+function formatExpiry(dateStr, estimated = false) {
+  if (estimated) return { text: "Expiry unconfirmed", soon: false };
   const days = daysUntil(dateStr);
   const d = new Date(dateStr);
   const label = d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
@@ -199,7 +202,7 @@ function render() {
       <div class="coupon-grid">`;
 
     items.forEach((c) => {
-      const exp = formatExpiry(c.expiry);
+      const exp = formatExpiry(c.expiry, c.expiryEstimated);
       html += `
         <div class="coupon-card" onclick="openModal('${c.id}')">
           <div class="card-top">
@@ -245,7 +248,7 @@ function openModal(id) {
   const c = allOffers.find((x) => x.id === id);
   if (!c) return;
   const info = ISSUERS[c.issuer];
-  const exp = formatExpiry(c.expiry);
+  const exp = formatExpiry(c.expiry, c.expiryEstimated);
 
   modalContent.innerHTML = `
     <button class="modal-close" onclick="closeModal()">&times;</button>
