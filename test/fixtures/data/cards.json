@@ -1,0 +1,25 @@
+{
+  "lastUpdated": "2026-09-18",
+  "valuations": { "cash": 1.0, "chase-ur": 1.25 },
+  "cards": [
+    {
+      "id": "flat-two",
+      "name": "Flat Two Cash",
+      "issuer": "citi",
+      "currency": "cash",
+      "baseRate": 2,
+      "rates": []
+    },
+    {
+      "id": "rotator",
+      "name": "Rotator Card",
+      "issuer": "chase",
+      "currency": "chase-ur",
+      "baseRate": 1,
+      "rates": [
+        { "category": "shopping", "rate": 5, "rotating": true, "activeFrom": "2026-07-01", "activeTo": "2026-09-30", "note": "5% rotating", "cap": "$1,500/quarter" },
+        { "category": "shopping", "rate": 3, "channel": "online", "note": "3% online shopping" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,179 @@
+{
+  "lastUpdated": "2026-09-18",
+  "_note": "Earn rates are entered by hand and drift as issuers change their products. Verify against your own cardmember agreement before trusting a recommendation. Caps are informational only — the engine does not track your spend against them.",
+  "valuations": {
+    "_note": "Cents per point, used to compare cards in a common unit. Cash back is 1.0 by definition. Point currencies are set to a conservative transfer/portal floor — raise them if you reliably get more.",
+    "cash": 1.0,
+    "amex-mr": 1.25,
+    "chase-ur": 1.25,
+    "capone-miles": 1.25,
+    "citi-typ": 1.0,
+    "bofa-cash": 1.0
+  },
+  "cards": [
+    {
+      "id": "amex-gold",
+      "name": "Amex Gold",
+      "issuer": "amex",
+      "currency": "amex-mr",
+      "baseRate": 1,
+      "rates": [
+        { "category": "dining", "rate": 4, "note": "4x at restaurants worldwide", "cap": "$50,000/yr" },
+        { "category": "grocery", "rate": 4, "note": "4x at U.S. supermarkets", "cap": "$25,000/yr" },
+        { "category": "travel", "rate": 3, "note": "3x on flights booked direct or via Amex Travel" }
+      ]
+    },
+    {
+      "id": "amex-platinum",
+      "name": "Amex Platinum",
+      "issuer": "amex",
+      "currency": "amex-mr",
+      "baseRate": 1,
+      "rates": [
+        { "category": "travel", "rate": 5, "note": "5x on flights booked direct or via Amex Travel, and prepaid hotels via Amex Travel", "cap": "$500,000/yr on flights" }
+      ]
+    },
+    {
+      "id": "amex-bcp",
+      "name": "Amex Blue Cash Preferred",
+      "issuer": "amex",
+      "currency": "cash",
+      "baseRate": 1,
+      "rates": [
+        { "category": "grocery", "rate": 6, "note": "6% at U.S. supermarkets", "cap": "$6,000/yr" },
+        { "category": "entertainment", "rate": 6, "note": "6% on select U.S. streaming subscriptions" },
+        { "category": "gas", "rate": 3, "note": "3% at U.S. gas stations" },
+        { "category": "travel", "rate": 3, "note": "3% on transit, including rideshare and parking" }
+      ]
+    },
+    {
+      "id": "amex-bce",
+      "name": "Amex Blue Cash Everyday",
+      "issuer": "amex",
+      "currency": "cash",
+      "baseRate": 1,
+      "rates": [
+        { "category": "grocery", "rate": 3, "note": "3% at U.S. supermarkets", "cap": "$6,000/yr" },
+        { "category": "shopping", "rate": 3, "channel": "online", "note": "3% on U.S. online retail purchases", "cap": "$6,000/yr" },
+        { "category": "gas", "rate": 3, "note": "3% at U.S. gas stations", "cap": "$6,000/yr" }
+      ]
+    },
+    {
+      "id": "chase-csp",
+      "name": "Chase Sapphire Preferred",
+      "issuer": "chase",
+      "currency": "chase-ur",
+      "baseRate": 1,
+      "rates": [
+        { "category": "travel", "rate": 5, "note": "5x on travel booked through Chase Travel" },
+        { "category": "dining", "rate": 3, "note": "3x on dining, including delivery and takeout" },
+        { "category": "entertainment", "rate": 3, "note": "3x on select streaming services" },
+        { "category": "grocery", "rate": 3, "channel": "online", "note": "3x on online grocery, excluding Walmart/Target/wholesale clubs" }
+      ]
+    },
+    {
+      "id": "chase-freedom-flex",
+      "name": "Chase Freedom Flex",
+      "issuer": "chase",
+      "currency": "chase-ur",
+      "baseRate": 1,
+      "rates": [
+        { "category": "dining", "rate": 3, "note": "3% on dining, including takeout" },
+        { "category": "wellness", "rate": 3, "note": "3% at drugstores" },
+        { "category": "travel", "rate": 5, "note": "5% on travel booked through Chase Travel" },
+        { "category": "shopping", "rate": 5, "rotating": true, "activeFrom": "2026-07-01", "activeTo": "2026-09-30", "note": "5% rotating category this quarter — activation required", "cap": "$1,500/quarter" }
+      ]
+    },
+    {
+      "id": "chase-freedom-unlimited",
+      "name": "Chase Freedom Unlimited",
+      "issuer": "chase",
+      "currency": "chase-ur",
+      "baseRate": 1.5,
+      "rates": [
+        { "category": "dining", "rate": 3, "note": "3% on dining, including takeout" },
+        { "category": "wellness", "rate": 3, "note": "3% at drugstores" },
+        { "category": "travel", "rate": 5, "note": "5% on travel booked through Chase Travel" }
+      ]
+    },
+    {
+      "id": "citi-double-cash",
+      "name": "Citi Double Cash",
+      "issuer": "citi",
+      "currency": "cash",
+      "baseRate": 2,
+      "rates": []
+    },
+    {
+      "id": "citi-custom-cash",
+      "name": "Citi Custom Cash",
+      "issuer": "citi",
+      "currency": "cash",
+      "baseRate": 1,
+      "rates": [
+        { "category": "any-top-category", "rate": 5, "note": "5% on your single highest-spend eligible category each billing cycle", "cap": "$500/cycle" }
+      ]
+    },
+    {
+      "id": "capone-savor",
+      "name": "Capital One Savor",
+      "issuer": "capone",
+      "currency": "cash",
+      "baseRate": 1,
+      "rates": [
+        { "category": "dining", "rate": 3, "note": "3% on dining" },
+        { "category": "entertainment", "rate": 3, "note": "3% on entertainment and popular streaming" },
+        { "category": "grocery", "rate": 3, "note": "3% at grocery stores, excluding superstores" }
+      ]
+    },
+    {
+      "id": "capone-venture-x",
+      "name": "Capital One Venture X",
+      "issuer": "capone",
+      "currency": "capone-miles",
+      "baseRate": 2,
+      "rates": [
+        { "category": "travel", "rate": 10, "note": "10x on hotels and rental cars booked through Capital One Travel" }
+      ]
+    },
+    {
+      "id": "discover-it",
+      "name": "Discover it Cash Back",
+      "issuer": "discover",
+      "currency": "cash",
+      "baseRate": 1,
+      "rates": [
+        { "category": "shopping", "rate": 5, "rotating": true, "activeFrom": "2026-10-01", "activeTo": "2026-12-31", "note": "5% rotating category — activation required", "cap": "$1,500/quarter" }
+      ]
+    },
+    {
+      "id": "bofa-customized-cash",
+      "name": "BofA Customized Cash Rewards",
+      "issuer": "bofa",
+      "currency": "bofa-cash",
+      "baseRate": 1,
+      "rates": [
+        { "category": "shopping", "rate": 3, "note": "3% in your chosen category — online shopping is one of the options", "cap": "$2,500/quarter combined" },
+        { "category": "grocery", "rate": 2, "note": "2% at grocery stores and wholesale clubs", "cap": "$2,500/quarter combined" }
+      ]
+    },
+    {
+      "id": "wells-active-cash",
+      "name": "Wells Fargo Active Cash",
+      "issuer": "wells",
+      "currency": "cash",
+      "baseRate": 2,
+      "rates": []
+    },
+    {
+      "id": "usbank-cash-plus",
+      "name": "U.S. Bank Cash+",
+      "issuer": "usbank",
+      "currency": "cash",
+      "baseRate": 1,
+      "rates": [
+        { "category": "any-top-category", "rate": 5, "note": "5% in two categories you choose each quarter", "cap": "$2,000/quarter combined" }
+      ]
+    }
+  ]
+}

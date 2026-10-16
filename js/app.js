@@ -24,11 +24,13 @@ const DATA_FILES = [
   { file: "data/amex-offers.json", issuer: "amex" },
   { file: "data/chase-offers.json", issuer: "chase" },
   { file: "data/bofa-offers.json", issuer: "bofa" },
-  // { file: "data/capone-offers.json", issuer: "capone" },
-  // { file: "data/citi-offers.json", issuer: "citi" },
+  // These four appear once the scraper first finds an offer for them;
+  // until then the failed fetch is ignored like any other missing file.
+  { file: "data/capone-offers.json", issuer: "capone" },
+  { file: "data/citi-offers.json", issuer: "citi" },
+  { file: "data/usbank-offers.json", issuer: "usbank" },
+  { file: "data/wells-offers.json", issuer: "wells" },
   // { file: "data/discover-offers.json", issuer: "discover" },
-  // { file: "data/usbank-offers.json", issuer: "usbank" },
-  // { file: "data/wells-offers.json", issuer: "wells" },
 ];
 
 // ── State ──
@@ -57,7 +59,10 @@ function daysUntil(dateStr) {
   return Math.ceil((d - today) / (1000 * 60 * 60 * 24));
 }
 
-function formatExpiry(dateStr) {
+// `estimated` marks an expiry the scraper inferred because the source post
+// gave no end date; it is a best guess, so it is never shown as a deadline.
+function formatExpiry(dateStr, estimated = false) {
+  if (estimated) return { text: "Expiry unconfirmed", soon: false };
   const days = daysUntil(dateStr);
   const d = new Date(dateStr);
   const label = d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
@@ -199,7 +204,7 @@ function render() {
       <div class="coupon-grid">`;
 
     items.forEach((c) => {
-      const exp = formatExpiry(c.expiry);
+      const exp = formatExpiry(c.expiry, c.expiryEstimated);
       html += `
         <div class="coupon-card" onclick="openModal('${c.id}')">
           <div class="card-top">
@@ -245,7 +250,7 @@ function openModal(id) {
   const c = allOffers.find((x) => x.id === id);
   if (!c) return;
   const info = ISSUERS[c.issuer];
-  const exp = formatExpiry(c.expiry);
+  const exp = formatExpiry(c.expiry, c.expiryEstimated);
 
   modalContent.innerHTML = `
     <button class="modal-close" onclick="closeModal()">&times;</button>

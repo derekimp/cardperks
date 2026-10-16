@@ -1,0 +1,24 @@
+{
+  "issuer": "chase",
+  "issuerName": "Chase",
+  "lastUpdated": "2026-09-10",
+  "source": "fixture",
+  "offers": [
+    {
+      "id": "chase-001",
+      "merchant": "Shake Shack",
+      "emoji": "🍔",
+      "value": "$15 back on $50+",
+      "valueNum": 15,
+      "description": "$15 back at Shake Shack.",
+      "category": "dining",
+      "expiry": "2026-11-30",
+      "isNew": true,
+      "isHot": false,
+      "minSpend": "$50",
+      "maxReward": "$15",
+      "terms": "Enrollment required.",
+      "sourceUrl": "https://example.com/shake"
+    }
+  ]
+}

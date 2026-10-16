@@ -1,0 +1,6 @@
+{
+  "_note": "Copy to config.json and fill in. config.json is gitignored so your phone numbers never land in the repo.",
+  "allow": ["+15555550123", "you@example.com"],
+  "pollSeconds": 3,
+  "maxRepliesPerMinute": 6
+}

@@ -1,0 +1,4 @@
+{
+  "_note": "The cards you actually carry, by id from data/cards.json. Leave the list empty to rank every card in the catalog, which is useful for 'what card should I get' but not for 'what should I pull out right now'. Fill it in and answers get much shorter and more useful.",
+  "cards": []
+}
