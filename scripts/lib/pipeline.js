@@ -3,7 +3,7 @@
  * duplicates, assign real or estimated expiries, drop what has expired.
  */
 
-const { fetchTaggedPosts } = require("./wordpress");
+const { fetchPosts } = require("./wordpress");
 const roundups = require("./roundups");
 const { parseOffer } = require("./parse-offer");
 const { parseExpiry, isoDate, addDays, DAY_MS } = require("./dates");
@@ -26,12 +26,16 @@ function isHot({ value, valueNum }) {
   return valueNum >= 25;
 }
 
-async function collect(http, source, { now, since, maxPages }) {
+async function collect(http, source, cfg, { now, since, maxPages }) {
   if (source.type === "wordpress") {
-    const { via, posts } = await fetchTaggedPosts(http, { site: source.site, tag: source.tag, since, maxPages });
+    const { site, tag, search } = source;
+    const { via, posts } = await fetchPosts(http, { site, tag, search, since, maxPages });
+    // A search also matches reviews and news that merely mention the phrase;
+    // only posts titled as this issuer's offer are kept.
+    const onTopic = search ? posts.filter((p) => (cfg.titleFilter || cfg.prefix).test(p.title)) : posts;
     return {
       via,
-      items: posts.map((p) => ({ title: p.title, text: `${p.title} ${p.text}`, link: p.link, postedAt: p.date })),
+      items: onTopic.map((p) => ({ title: p.title, text: `${p.title} ${p.text}`, link: p.link, postedAt: p.date })),
     };
   }
 
@@ -99,7 +103,7 @@ async function scrapeIssuer(http, issuerKey, cfg, options = {}) {
   for (const source of cfg.sources) {
     const stat = { name: source.name, type: source.type, via: null, items: 0, parsed: 0, error: null };
     try {
-      const { via, items } = await collect(http, source, { now: opts.now, since, maxPages: opts.maxPages });
+      const { via, items } = await collect(http, source, cfg, { now: opts.now, since, maxPages: opts.maxPages });
       stat.via = via;
       stat.items = items.length;
       for (const item of items) {

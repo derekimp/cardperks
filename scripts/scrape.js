@@ -6,9 +6,11 @@
  *   node scripts/scrape.js --issuer amex --dry-run
  *   node scripts/scrape.js --issuer chase,bofa --max-pages 5 --window-days 90
  *
- * Exits non-zero when any issuer comes back empty, so a scheduled run that
- * gets blocked fails loudly instead of silently leaving stale data. An empty
- * result never overwrites an existing file.
+ * Exits non-zero when a required issuer (Amex, Chase, BofA) comes back
+ * empty, so a scheduled run that gets blocked fails loudly instead of
+ * silently leaving stale data. The other issuers are thinly covered and may
+ * legitimately have nothing on a given day. An empty result never
+ * overwrites an existing file.
  */
 
 const fs = require("fs");
@@ -76,8 +78,12 @@ async function main() {
     const decision = decideWrite(existing && existing.offers, offers);
 
     if (decision === "empty") {
-      failures.push(key);
-      console.error(`  ✗ No offers parsed — keeping the existing ${path.basename(file)}.`);
+      if (cfg.required) {
+        failures.push(key);
+        console.error(`  ✗ No offers parsed — keeping the existing ${path.basename(file)}.`);
+      } else {
+        console.log(`  · No offers found — ${path.basename(file)} left as is.`);
+      }
       continue;
     }
 

@@ -24,11 +24,13 @@ const DATA_FILES = [
   { file: "data/amex-offers.json", issuer: "amex" },
   { file: "data/chase-offers.json", issuer: "chase" },
   { file: "data/bofa-offers.json", issuer: "bofa" },
-  // { file: "data/capone-offers.json", issuer: "capone" },
-  // { file: "data/citi-offers.json", issuer: "citi" },
+  // These four appear once the scraper first finds an offer for them;
+  // until then the failed fetch is ignored like any other missing file.
+  { file: "data/capone-offers.json", issuer: "capone" },
+  { file: "data/citi-offers.json", issuer: "citi" },
+  { file: "data/usbank-offers.json", issuer: "usbank" },
+  { file: "data/wells-offers.json", issuer: "wells" },
   // { file: "data/discover-offers.json", issuer: "discover" },
-  // { file: "data/usbank-offers.json", issuer: "usbank" },
-  // { file: "data/wells-offers.json", issuer: "wells" },
 ];
 
 // ── State ──

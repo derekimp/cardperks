@@ -1,7 +1,8 @@
 # Offer scraping
 
 `node scripts/scrape.js --all` rebuilds `data/<issuer>-offers.json` for Amex,
-Chase and Bank of America. A GitHub Action runs it daily and commits any change.
+Chase, Bank of America, Citi, Capital One, US Bank and Wells Fargo. A GitHub
+Action runs it daily and commits any change.
 
 ```bash
 npm run scrape:all                      # every issuer, writes data/
@@ -15,9 +16,18 @@ Configured in `scripts/sources.js`; adding one is a single entry.
 
 | Type | Reads | Used for |
 | --- | --- | --- |
-| `wordpress` | Every post under a tag via the WordPress REST API (`/wp-json/wp/v2/posts`), paginated, falling back to the tag's RSS feed | Doctor of Credit's `amex-offers`, `chase-offers`, `bank-of-america-deals` |
+| `wordpress` + `tag` | Every post under a tag via the WordPress REST API (`/wp-json/wp/v2/posts`), paginated, falling back to the tag's RSS feed | Doctor of Credit's `amex-offers`, `chase-offers`, `bank-of-america-deals` |
+| `wordpress` + `search` | Every post matching a phrase, same API (RSS fallback: `/?s=…&feed=rss2`); only posts whose title names the issuer's offer program are kept | Danny the Deal Guru, Miles to Memories, Frequent Miler for every issuer; Doctor of Credit for the newer four |
 | `awardwallet` | One roundup article, one heading per offer | AwardWallet's Amex and Chase roundups |
 | `cardsandpoints` | One roundup article, one line per offer | Cards & Points' BankAmeriDeals list |
+
+Search is how a blog gets added without knowing its tag names: a new
+WordPress blog is one line in `BLOGS` in `scripts/sources.js`. Because a
+search also returns card reviews and news that mention the phrase, results
+pass through the issuer's `titleFilter` (or its `prefix`), so "Wells Fargo
+Active Cash Review" is dropped while "Wells Fargo Deals: Chewy…" is kept.
+Offers found by several blogs merge into one, so extra blogs add coverage
+without adding duplicates.
 
 The REST API is preferred over scraping HTML because it survives theme
 changes and pages through history; the old scrapers saw only the ~10 titles
@@ -51,7 +61,11 @@ Offer ids are stable slugs (`amex-uniqlo`), so links and diffs stay readable.
 - A source that fails is logged and skipped; the issuer's other sources
   still count.
 - An issuer that ends up with **zero** offers keeps its existing file — a
-  blocked or broken source never wipes the site — and the run exits 1.
+  blocked or broken source never wipes the site. For the required issuers
+  (Amex, Chase, BofA) the run then exits 1. Citi, Capital One, US Bank and
+  Wells Fargo get far fewer posts, so an empty day is logged but not a
+  failure; their data file appears the first time an offer is found, and the
+  site and bot ignore it until then.
 - In the workflow, issuers that succeeded are still committed; the job then
   goes red so a failing source gets noticed.
 - If the offers did not change, the file is not rewritten, so a quiet day

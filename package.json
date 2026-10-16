@@ -15,7 +15,15 @@
     "scrape:chase": "node scripts/scrape.js --issuer chase",
     "scrape:chase:dry": "node scripts/scrape.js --issuer chase --dry-run",
     "scrape:bofa": "node scripts/scrape.js --issuer bofa",
-    "scrape:bofa:dry": "node scripts/scrape.js --issuer bofa --dry-run"
+    "scrape:bofa:dry": "node scripts/scrape.js --issuer bofa --dry-run",
+    "scrape:citi": "node scripts/scrape.js --issuer citi",
+    "scrape:citi:dry": "node scripts/scrape.js --issuer citi --dry-run",
+    "scrape:capone": "node scripts/scrape.js --issuer capone",
+    "scrape:capone:dry": "node scripts/scrape.js --issuer capone --dry-run",
+    "scrape:usbank": "node scripts/scrape.js --issuer usbank",
+    "scrape:usbank:dry": "node scripts/scrape.js --issuer usbank --dry-run",
+    "scrape:wells": "node scripts/scrape.js --issuer wells",
+    "scrape:wells:dry": "node scripts/scrape.js --issuer wells --dry-run"
   },
   "dependencies": {
     "cheerio": "^1.0.0"

@@ -12,7 +12,7 @@ const path = require("path");
 const { createHttp, HttpError } = require("../scripts/lib/http");
 const { parseExpiry } = require("../scripts/lib/dates");
 const { parseOffer } = require("../scripts/lib/parse-offer");
-const { fetchTaggedPosts } = require("../scripts/lib/wordpress");
+const { fetchPosts } = require("../scripts/lib/wordpress");
 const { scrapeIssuer, mergeOffers, decideWrite } = require("../scripts/lib/pipeline");
 const { parseArgs } = require("../scripts/scrape");
 const SOURCES = require("../scripts/sources");
@@ -40,10 +40,11 @@ function stubHttp(routes) {
   };
 }
 
+const DOC = (u) => u.startsWith("https://www.doctorofcredit.com/");
 const wpRoutes = () => [
-  [(u) => u.includes("/wp-json/wp/v2/tags"), { body: fixture("wp-tags.json") }],
-  [(u) => u.includes("/wp/v2/posts") && u.includes("page=1&"), { body: fixture("wp-posts-page1.json"), headers: { "x-wp-totalpages": "2" } }],
-  [(u) => u.includes("/wp/v2/posts") && u.includes("page=2&"), { body: fixture("wp-posts-page2.json"), headers: { "x-wp-totalpages": "2" } }],
+  [(u) => DOC(u) && u.includes("/wp-json/wp/v2/tags"), { body: fixture("wp-tags.json") }],
+  [(u) => DOC(u) && u.includes("/wp/v2/posts") && u.includes("page=1&"), { body: fixture("wp-posts-page1.json"), headers: { "x-wp-totalpages": "2" } }],
+  [(u) => DOC(u) && u.includes("/wp/v2/posts") && u.includes("page=2&"), { body: fixture("wp-posts-page2.json"), headers: { "x-wp-totalpages": "2" } }],
 ];
 const awRoute = [(u) => u.includes("awardwallet.com"), { body: fixture("awardwallet.html") }];
 
@@ -113,7 +114,7 @@ test("expired and non-offer posts are skipped", () => {
 
 test("REST client follows X-WP-TotalPages and decodes titles", async () => {
   const http = stubHttp(wpRoutes());
-  const { via, posts } = await fetchTaggedPosts(http, {
+  const { via, posts } = await fetchPosts(http, {
     site: "https://www.doctorofcredit.com", tag: "amex-offers", since: new Date("2026-06-01T00:00:00Z"),
   });
   assert.equal(via, "rest");
@@ -125,7 +126,7 @@ test("REST client follows X-WP-TotalPages and decodes titles", async () => {
 
 test("RSS is used when the REST API is unavailable", async () => {
   const http = stubHttp([[(u) => u.includes("/tag/chase-offers/feed/") && !u.includes("paged"), { body: fixture("feed.xml") }]]);
-  const { via, posts } = await fetchTaggedPosts(http, {
+  const { via, posts } = await fetchPosts(http, {
     site: "https://www.doctorofcredit.com", tag: "chase-offers", since: new Date("2026-06-01T00:00:00Z"),
   });
   assert.equal(via, "rss");
@@ -137,9 +138,26 @@ test("RSS is used when the REST API is unavailable", async () => {
   assert.ok(!http.calls.some((u) => u.includes("paged=2")), "stops paging once posts predate the window");
 });
 
+test("search reads the posts endpoint by phrase, with an RSS fallback", async () => {
+  const since = new Date("2026-06-01T00:00:00Z");
+  const rest = stubHttp([[(u) => u.includes("/wp/v2/posts?search=chase%20offer&"), { body: "[]", headers: { "x-wp-totalpages": "1" } }]]);
+  assert.equal((await fetchPosts(rest, { site: "https://blog.example", search: "chase offer", since })).via, "rest");
+  assert.ok(!rest.calls.some((u) => u.includes("/tags")), "no tag lookup for a search");
+
+  const rss = stubHttp([[(u) => u.includes("/?s=chase%20offer&feed=rss2") && !u.includes("paged"), { body: fixture("feed.xml") }]]);
+  const { via, posts } = await fetchPosts(rss, { site: "https://blog.example", search: "chase offer", since });
+  assert.equal(via, "rss");
+  assert.equal(posts.length, 2);
+});
+
+test("a WordPress source needs exactly one of tag or search", async () => {
+  await assert.rejects(fetchPosts(stubHttp([]), { site: "https://x.example", since: NOW }), /exactly one/);
+  await assert.rejects(fetchPosts(stubHttp([]), { site: "https://x.example", tag: "t", search: "s", since: NOW }), /exactly one/);
+});
+
 test("a source failing both ways reports both errors", async () => {
   await assert.rejects(
-    fetchTaggedPosts(stubHttp([]), { site: "https://x.example", tag: "t", since: NOW }),
+    fetchPosts(stubHttp([]), { site: "https://x.example", tag: "t", since: NOW }),
     /REST failed .*RSS failed/
   );
 });
@@ -170,10 +188,11 @@ test("the amex pipeline merges, dates and filters offers", async () => {
   const { offers, stats, allSourcesFailed } = await scrapeIssuer(http, "amex", SOURCES.amex, { now: NOW });
 
   assert.equal(allSourcesFailed, false);
-  assert.deepEqual(stats.map((s) => [s.name, s.via, s.error]), [
+  assert.deepEqual(stats.slice(0, 2).map((s) => [s.name, s.via, s.error]), [
     ["Doctor of Credit", "rest", null],
     ["AwardWallet", "page", null],
   ]);
+  assert.ok(stats.slice(2).every((s) => s.error), "unstubbed search blogs fail without sinking the run");
 
   const byMerchant = Object.fromEntries(offers.map((o) => [o.merchant, o]));
   assert.deepEqual(Object.keys(byMerchant).sort(), ["Dell", "H&M", "Marriott Bonvoy", "Starbucks", "Uniqlo"]);
@@ -232,7 +251,7 @@ test("an empty result never overwrites the data file", () => {
 
 test("CLI arguments parse", () => {
   assert.deepEqual(parseArgs(["--issuer", "chase,bofa"]).issuers, ["chase", "bofa"]);
-  assert.deepEqual(parseArgs(["--all"]).issuers, ["amex", "chase", "bofa"]);
+  assert.deepEqual(parseArgs(["--all"]).issuers, ["amex", "chase", "bofa", "citi", "capone", "usbank", "wells"]);
   assert.equal(parseArgs(["--all", "--dry-run"]).dryRun, true);
   assert.equal(parseArgs(["--all", "--max-pages", "5"]).maxPages, 5);
   assert.throws(() => parseArgs(["--bogus"]), /Unknown argument/);
@@ -259,4 +278,71 @@ test("a post with an unreadable date is skipped, not fatal", async () => {
   const { offers, stats } = await scrapeIssuer(http, "amex", { ...SOURCES.amex, sources: [SOURCES.amex.sources[0]] }, { now: NOW });
   assert.equal(stats[0].error, null);
   assert.ok(offers.length > 0, "the rest of the source still counts");
+});
+
+// ── Search sources and the newer issuers ────────────────────────────
+
+/** A WordPress search result, shaped like the REST API's post objects. */
+const wpPost = (title, date = "2026-10-03T10:00:00", content = "") => ({
+  date_gmt: date, link: `https://blog.example/${encodeURIComponent(title)}`, title: { rendered: title }, content: { rendered: content },
+});
+
+test("search results are kept only when titled as the issuer's offer", async () => {
+  const results = [
+    wpPost("Wells Fargo Deals: Spend $40 At Chewy, Get $8 Back", "2026-10-03T10:00:00", "<p>Expires 11/20/2026</p>"),
+    wpPost("Wells Fargo Active Cash Review: $200 Bonus, Get $200 Back"),
+    wpPost("Chase Offers: Shake Shack, Get 15% Back"),
+  ];
+  const http = stubHttp([
+    [(u) => u.includes("dannydealguru.com/wp-json/wp/v2/posts?search="), { body: JSON.stringify(results), headers: { "x-wp-totalpages": "1" } }],
+  ]);
+  const { offers, stats, allSourcesFailed } = await scrapeIssuer(http, "wells", SOURCES.wells, { now: NOW });
+
+  assert.equal(allSourcesFailed, false);
+  const ddg = stats.find((s) => s.name === "Danny the Deal Guru (search)");
+  assert.deepEqual([ddg.items, ddg.parsed], [1, 1], "the card review and the Chase post are dropped");
+  assert.equal(offers.length, 1);
+  assert.equal(offers[0].id, "wells-chewy");
+  assert.equal(offers[0].value, "$8 back on $40+");
+  assert.equal(offers[0].expiry, "2026-11-20");
+});
+
+test("BofA search ignores card reviews that only mention the bank", () => {
+  const { titleFilter } = SOURCES.bofa;
+  assert.ok(titleFilter.test("BankAmeriDeals: Starbucks $10 Off $20"));
+  assert.ok(titleFilter.test("Bank of America Deals: Get 15% Back At Chewy"));
+  assert.ok(!titleFilter.test("Bank of America Customized Cash Rewards Review: Get $200 Back"));
+});
+
+test("the newer issuers' title shapes parse", () => {
+  const cases = [
+    ["citi", "[Targeted] Citi Merchant Offers: Get 10% Back At Lowe's (Up To $50)", "Lowe's", "10% back (up to $50)"],
+    ["capone", "Capital One Offers: Spend $100 At Wayfair, Get $20 Back", "Wayfair", "$20 back on $100+"],
+    ["usbank", "U.S. Bank ShopRewards: DoorDash, Spend $30 Get $6 Back", "DoorDash", "$6 back on $30+"],
+    ["usbank", "US Bank Deals: Get 10% Back At Lyft", "Lyft", "10% back"],
+    ["wells", "Wells Fargo Deals: Get 5% Back At Home Depot (Up To $25)", "Home Depot", "5% back (up to $25)"],
+  ];
+  for (const [issuer, title, merchant, value] of cases) {
+    const cfg = SOURCES[issuer];
+    assert.ok((cfg.titleFilter || cfg.prefix).test(title), `on topic: ${title}`);
+    const o = parseOffer({ title, prefix: cfg.prefix });
+    assert.ok(o, `parsed: ${title}`);
+    assert.equal(o.merchant, merchant, title);
+    assert.equal(o.value, value, title);
+  }
+});
+
+test("only the original three issuers are required", () => {
+  const required = Object.keys(SOURCES).filter((k) => SOURCES[k].required);
+  assert.deepEqual(required, ["amex", "chase", "bofa"]);
+});
+
+test("every issuer the scraper writes is loaded by the site and the bot", () => {
+  const { OFFER_FILES } = require("../lib/offers");
+  const loaded = OFFER_FILES.map((f) => f.issuer);
+  const appJs = fs.readFileSync(path.join(__dirname, "..", "js", "app.js"), "utf8");
+  for (const key of Object.keys(SOURCES)) {
+    assert.ok(loaded.includes(key), `lib/offers.js loads ${key}`);
+    assert.match(appJs, new RegExp(`^\\s*\\{ file: "data/${key}-offers\\.json"`, "m"), `js/app.js loads ${key}`);
+  }
 });
